@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: alphafrog
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://47.93.23.105:5432/alphafrog-v3
+    username: postgres
+    password: Excited1s
+  kafka:
+    bootstrap-servers: 47.236.183.177:9092
+    # bootstrap-servers: "47.236.183.177:9092"
+    admin:
+      auto-create: true
+    consumer:
+      group-id: alphafrog-v3
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    
+
+tushare:
+  token: 46b59904f4ab0aaec2858801a9b41283b5c7f3720af00875be0a6028
