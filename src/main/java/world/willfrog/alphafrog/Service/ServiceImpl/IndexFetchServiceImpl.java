@@ -60,82 +60,88 @@ public class IndexFetchServiceImpl implements IndexFetchService{
     List<IndexInfo> indexInfoList = new ArrayList<>();
 
 
-    for(int i = 0; i < data.size(); i++){
-      JSONArray item = data.getJSONArray(i);
-      IndexInfo indexInfo = new IndexInfo();
+    try{
+      for(int i = 0; i < data.size(); i++){
+        JSONArray item = data.getJSONArray(i);
+        IndexInfo indexInfo = new IndexInfo();
 
-      for(int j = 0; j < fields.size(); j++){
-        String field = fields.getString(j);
-        switch (field){
-          case "ts_code":
-            indexInfo.setTsCode(item.getString(j));
-            break;
-          case "name":
-            indexInfo.setName(item.getString(j));
-            break;
-          case "fullname":
-            indexInfo.setFullName(item.getString(j));
-            break;
-          case "market":
-            indexInfo.setMarket(item.getString(j));
-            break;
-          case "publisher":
-            indexInfo.setPublisher(item.getString(j));
-            break;
-          case "index_type":
-            indexInfo.setIndexType(item.getString(j));
-            break;
-          case "category":
-            indexInfo.setCategory(item.getString(j));
-            break;
-          case "base_date":
-            String baseDateStr = item.getString(j);
-            if(baseDateStr == null) {
-              indexInfo.setBaseDate(null);
-            } else {
-              Long baseDate = dateConvertUtils.convertDateStrToLong(baseDateStr, "yyyyMMdd");
-              indexInfo.setBaseDate(baseDate);
-            }
-            break;
-          case "base_point":
-            BigDecimal basePointDecimal = item.getBigDecimal(j);
-            if(basePointDecimal == null) {
-              indexInfo.setBasePoint(null);
-            } else {
-              indexInfo.setBasePoint(basePointDecimal.doubleValue());
-            }
-            break;
-          case "list_date":
-            String listDateStr = item.getString(j);
-            if(listDateStr == null) {
-              indexInfo.setListDate(null);
-            } else {
-              Long listDate = dateConvertUtils.convertDateStrToLong(listDateStr, "yyyyMMdd");
-              indexInfo.setListDate(listDate);
-            }
-            break;
-          case "weight_rule":
-            indexInfo.setWeightRule(item.getString(j));
-            break;
-          case "desc":
-            indexInfo.setDesc(item.getString(j));
-            break;
-          case "exp_date":
-            String expDateStr = item.getString(j);
-            if(expDateStr == null) {
-              indexInfo.setExpDate(null);
-            } else {
-              Long expDate = dateConvertUtils.convertDateStrToLong(expDateStr, "yyyyMMdd");
-              indexInfo.setExpDate(expDate);
-            }
+        for(int j = 0; j < fields.size(); j++){
+          String field = fields.getString(j);
+          switch (field){
+            case "ts_code":
+              indexInfo.setTsCode(item.getString(j));
+              break;
+            case "name":
+              indexInfo.setName(item.getString(j));
+              break;
+            case "fullname":
+              indexInfo.setFullName(item.getString(j));
+              break;
+            case "market":
+              indexInfo.setMarket(item.getString(j));
+              break;
+            case "publisher":
+              indexInfo.setPublisher(item.getString(j));
+              break;
+            case "index_type":
+              indexInfo.setIndexType(item.getString(j));
+              break;
+            case "category":
+              indexInfo.setCategory(item.getString(j));
+              break;
+            case "base_date":
+              String baseDateStr = item.getString(j);
+              if(baseDateStr == null) {
+                indexInfo.setBaseDate(null);
+              } else {
+                Long baseDate = dateConvertUtils.convertDateStrToLong(baseDateStr, "yyyyMMdd");
+                indexInfo.setBaseDate(baseDate);
+              }
+              break;
+            case "base_point":
+              BigDecimal basePointDecimal = item.getBigDecimal(j);
+              if(basePointDecimal == null) {
+                indexInfo.setBasePoint(null);
+              } else {
+                indexInfo.setBasePoint(basePointDecimal.doubleValue());
+              }
+              break;
+            case "list_date":
+              String listDateStr = item.getString(j);
+              if(listDateStr == null) {
+                indexInfo.setListDate(null);
+              } else {
+                Long listDate = dateConvertUtils.convertDateStrToLong(listDateStr, "yyyyMMdd");
+                indexInfo.setListDate(listDate);
+              }
+              break;
+            case "weight_rule":
+              indexInfo.setWeightRule(item.getString(j));
+              break;
+            case "desc":
+              indexInfo.setDesc(item.getString(j));
+              break;
+            case "exp_date":
+              String expDateStr = item.getString(j);
+              if(expDateStr == null) {
+                indexInfo.setExpDate(null);
+              } else {
+                Long expDate = dateConvertUtils.convertDateStrToLong(expDateStr, "yyyyMMdd");
+                indexInfo.setExpDate(expDate);
+              }
 
-            break;
-          default:
-            break;
+              break;
+            default:
+              break;
+          }
         }
+        indexInfoList.add(indexInfo);
       }
-      indexInfoList.add(indexInfo);
+    } catch (Exception e){
+      System.out.println("Error occured while fetching index info");
+      e.printStackTrace();
     }
+
 
     for(IndexInfo indexInfo : indexInfoList) {
       indexInfoDao.insertIndexInfo(indexInfo);
@@ -168,53 +174,52 @@ public class IndexFetchServiceImpl implements IndexFetchService{
     List<IndexDaily> indexDailyList = new ArrayList<>();
 
     for (int i = 0; i < data.size(); i++) {
-        JSONArray item = data.getJSONArray(i);
-        IndexDaily indexDaily = new IndexDaily();
+      JSONArray item = data.getJSONArray(i);
+      IndexDaily indexDaily = new IndexDaily();
 
-        for (int j = 0; j < fields.size(); j++) {
-            String field = fields.getString(j);
-            switch (field) {
-                case "ts_code":
-                    indexDaily.setTsCode(item.getString(j));
-                    break;
-                case "trade_date":
-                    String tradeDateStr = item.getString(j);
-                    Long tradeDate = dateConvertUtils.convertDateStrToLong(tradeDateStr, "yyyyMMdd");
-                    indexDaily.setTradeDate(tradeDate);
-                    
-                    break;
-                case "close":
-                    indexDaily.setClose(item.getBigDecimal(j).doubleValue());
-                    break;
-                case "open":
-                    indexDaily.setOpen(item.getBigDecimal(j).doubleValue());
-                    break;
-                case "high":
-                    indexDaily.setHigh(item.getBigDecimal(j).doubleValue());
-                    break;
-                case "low":
-                    indexDaily.setLow(item.getBigDecimal(j).doubleValue());
-                    break;
-                case "pre_close":
-                    indexDaily.setPreClose(item.getBigDecimal(j).doubleValue());
-                    break;
-                case "change":
-                    indexDaily.setChange(item.getBigDecimal(j).doubleValue());
-                    break;
-                case "pct_chg":
-                    indexDaily.setPctChg(item.getBigDecimal(j).doubleValue());
-                    break;
-                case "vol":
-                    indexDaily.setVol(item.getBigDecimal(j).doubleValue());
-                    break;
-                case "amount":
-                    indexDaily.setAmount(item.getBigDecimal(j).doubleValue());
-                    break;
-                default:
-                    break;
-            }
+      for (int j = 0; j < fields.size(); j++) {
+        String field = fields.getString(j);
+        switch (field) {
+          case "ts_code":
+            indexDaily.setTsCode(item.getString(j));
+            break;
+          case "trade_date":
+            String tradeDateStr = item.getString(j);
+            Long tradeDate = dateConvertUtils.convertDateStrToLong(tradeDateStr, "yyyyMMdd");
+            indexDaily.setTradeDate(tradeDate);
+            break;
+          case "close":
+            indexDaily.setClose(item.getBigDecimal(j).doubleValue());
+            break;
+          case "open":
+            indexDaily.setOpen(item.getBigDecimal(j).doubleValue());
+            break;
+          case "high":
+            indexDaily.setHigh(item.getBigDecimal(j).doubleValue());
+            break;
+          case "low":
+            indexDaily.setLow(item.getBigDecimal(j).doubleValue());
+            break;
+          case "pre_close":
+            indexDaily.setPreClose(item.getBigDecimal(j).doubleValue());
+            break;
+          case "change":
+            indexDaily.setChange(item.getBigDecimal(j).doubleValue());
+            break;
+          case "pct_chg":
+            indexDaily.setPctChg(item.getBigDecimal(j).doubleValue());
+            break;
+          case "vol":
+            indexDaily.setVol(item.getBigDecimal(j).doubleValue());
+            break;
+          case "amount":
+            indexDaily.setAmount(item.getBigDecimal(j).doubleValue());
+            break;
+          default:
+            break;
         }
-        indexDailyList.add(indexDaily);
+      }
+      indexDailyList.add(indexDaily);
     }
 
     for (IndexDaily indexDaily : indexDailyList) {

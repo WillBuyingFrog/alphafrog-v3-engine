@@ -23,4 +23,13 @@ public class DateConvertUtils {
       return 0L;
     }
   }
+
+  public String convertTimestampToString(Long timestamp, String format) {
+    if(format.equals("yyyyMMdd")){
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+      return dateFormat.format(new Date(timestamp));
+    } else {
+      return "";
+    }
+  }
 }
