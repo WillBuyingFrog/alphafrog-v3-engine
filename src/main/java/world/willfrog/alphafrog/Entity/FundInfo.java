@@ -61,31 +61,31 @@ public class FundInfo {
 
     // 发行份额（亿份）
     @Column(name = "issue_amount")
-    Float issueAmount;
+    Double issueAmount;
 
     // 管理费
     @Column(name = "m_fee")
-    Float mFee;
+    Double mFee;
 
     // 托管费
     @Column(name = "c_fee")
-    Float cFee;
+    Double cFee;
 
     // 存续期
     @Column(name = "duration_year")
-    Float durationYear;
+    Double durationYear;
 
     // 面值
     @Column(name = "p_value")
-    Float pValue;
+    Double pValue;
 
     // 起点金额（万元）
     @Column(name = "min_amount")
-    Float minAmount;
+    Double minAmount;
 
     // 预期收益率
     @Column(name = "exp_return")
-    Float expReturn;
+    Double expReturn;
 
     // 业绩比较基准
     @Column(name = "benchmark", length = 500)
