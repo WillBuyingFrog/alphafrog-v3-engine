@@ -1,6 +1,6 @@
 package world.willfrog.alphafrog.Service;
 
-public interface FundFetchService {
+public interface FundNavFetchService {
 
   int directFetchFundNavByTsCodeAndDateRange(String tsCode, String startDate, String endDate, int offset, int limit);
 

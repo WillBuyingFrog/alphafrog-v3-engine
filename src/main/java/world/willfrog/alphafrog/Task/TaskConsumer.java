@@ -5,10 +5,9 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import world.willfrog.alphafrog.Common.TushareRequestUtils;
-import world.willfrog.alphafrog.Service.FundFetchService;
+import world.willfrog.alphafrog.Service.FundNavFetchService;
 import world.willfrog.alphafrog.Service.IndexFetchService;
+import world.willfrog.alphafrog.Service.FundPortfolioFetchService;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -17,14 +16,18 @@ import com.alibaba.fastjson.JSONObject;
 @Service
 public class TaskConsumer {
 
-  final  IndexFetchService indexFetchService;
+  final IndexFetchService indexFetchService;
 
-  final FundFetchService fundFetchService;
+  final FundNavFetchService fundNavFetchService;
+
+  final FundPortfolioFetchService fundPortfolioFetchService;
 
 
-  public TaskConsumer(IndexFetchService indexFetchService, FundFetchService fundFetchService) {
+  public TaskConsumer(IndexFetchService indexFetchService, FundNavFetchService fundNavFetchService,
+                      FundPortfolioFetchService fundPortfolioFetchService) {
     this.indexFetchService = indexFetchService;
-    this.fundFetchService = fundFetchService;
+    this.fundNavFetchService = fundNavFetchService;
+    this.fundPortfolioFetchService = fundPortfolioFetchService;
   }
 
   @KafkaListener(topics = "fetch_topic", groupId = "alphafrog-v3")
@@ -49,17 +52,23 @@ public class TaskConsumer {
         break;
       case "fund_nav":
         if(taskSubtype == 1) {
-          result = fundFetchService.directFetchFundNavByTsCodeAndDateRange(taskParams.getString("ts_code"),
+          result = fundNavFetchService.directFetchFundNavByTsCodeAndDateRange(taskParams.getString("ts_code"),
                   taskParams.getString("start_date"), taskParams.getString("end_date"),
                   taskParams.getInteger("offset"), taskParams.getInteger("limit"));
         } else if (taskSubtype == 2) {
           // 按照净值公布时间和上市市场类型爬取
-          result = fundFetchService.directFetchFundNavByNavDateAndMarket(taskParams.getString("nav_date"),
+          result = fundNavFetchService.directFetchFundNavByNavDateAndMarket(taskParams.getString("nav_date"),
                   taskParams.getString("market"), taskParams.getInteger("offset"), taskParams.getInteger("limit"));
         } else {
           // 不存在这样的子任务类型
           result = -1;
         }
+        break;
+      case "fund_portfolio":
+        // 处理基金持仓任务
+        result = fundPortfolioFetchService.directFetchFundPortfolioByTsCodeAndDateRange(taskParams.getString("ts_code"),
+                taskParams.getString("start_date"), taskParams.getString("end_date"),
+                taskParams.getInteger("offset"), taskParams.getInteger("limit"));
         break;
       default:
         result = -1;
