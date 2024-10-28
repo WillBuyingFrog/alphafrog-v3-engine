@@ -17,41 +17,40 @@ import jakarta.persistence.GenerationType;
 @Entity
 @Table(name = "alphafrog_transaction_record")
 public class TransactionRecord {
-  
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "transaction_record_id")
-  private Long transactionRecordId;
 
-  @Column(name = "transaction_record_time")
-  private Long transactionRecordTime;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "transaction_record_id")
+    private Long transactionRecordId;
 
-  @Column(name = "transaction_record_ts_code")
-  private String transactionRecordTsCode;
-  
-  @Column(name = "transaction_record_amount")
-  private Double transactionRecordAmount;
+    @Column(name = "transaction_record_time")
+    private Long transactionRecordTime;
 
-  @Column(name = "transaction_record_nav")
-  private Double transactionRecordNav;
+    @Column(name = "transaction_record_ts_code")
+    private String transactionRecordTsCode;
 
-  @Column(name = "transaction_record_shares")
-  private Double transactionRecordShares;
+    @Column(name = "transaction_record_amount")
+    private Double transactionRecordAmount;
 
-  @Column(name = "transaction_record_fee")
-  private Double transactionRecordFee;
+    @Column(name = "transaction_record_nav")
+    private Double transactionRecordNav;
 
-  @Column(name = "transaction_record_type")
-  private TransactionRecordType transactionRecordType;
+    @Column(name = "transaction_record_shares")
+    private Double transactionRecordShares;
 
-  public enum TransactionRecordType {
-    BUY,
-    SELL,
-    DIVIDEND,
-    TRANSFER_IN,
-    TRANSFER_OUT
-  }
+    @Column(name = "transaction_record_fee")
+    private Double transactionRecordFee;
 
+    @Column(name = "transaction_record_type")
+    private TransactionRecordType transactionRecordType;
+
+    public enum TransactionRecordType {
+        BUY,
+        SELL,
+        DIVIDEND,
+        TRANSFER_IN,
+        TRANSFER_OUT
+    }
 
 
 }

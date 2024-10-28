@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface IndexFetchService {
 
-  int directFetchIndexInfoByMarket(String market, int offset);
+    int directFetchIndexInfoByMarket(String market, int offset);
 
-  int directFetchIndexDailyByTsCodeAndDateRange(String tsCode, String startDate, String endDate);
+    int directFetchIndexDailyByTsCodeAndDateRange(String tsCode, String startDate, String endDate);
 
 
 }

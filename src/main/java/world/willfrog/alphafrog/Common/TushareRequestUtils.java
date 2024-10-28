@@ -23,49 +23,49 @@ import org.springframework.stereotype.Component;
 @Component
 @PropertySource("classpath:application.yml")
 public class TushareRequestUtils {
-  
-  @Value("${tushare.token}")
-  private String tushareToken;
 
-  public JSONObject createTusharePostRequest(Map<String, Object> params){
-    try(CloseableHttpClient httpClient = HttpClients.createDefault()){
-      HttpPost request = new HttpPost("http://api.tushare.pro");
-      request.setHeader("Content-Type", "application/json");
+    @Value("${tushare.token}")
+    private String tushareToken;
 
-      JSONObject jsonParams = new JSONObject();
-      jsonParams.put("token", tushareToken);
-      for (Map.Entry<String, Object> entry : params.entrySet()) {
-          jsonParams.put(entry.getKey(), entry.getValue());
-      }
-      String jsonParamsString = jsonParams.toString();
-      System.out.println("jsonParamsString: " + jsonParamsString);
-      StringEntity entity = new StringEntity(jsonParamsString, ContentType.APPLICATION_JSON);
-      request.setEntity(entity);
+    public JSONObject createTusharePostRequest(Map<String, Object> params) {
+        try ( CloseableHttpClient httpClient = HttpClients.createDefault() ) {
+            HttpPost request = new HttpPost("http://api.tushare.pro");
+            request.setHeader("Content-Type", "application/json");
 
-      try (ClassicHttpResponse response = httpClient.execute(request)) {
-        HttpEntity responseEntity = response.getEntity();
-        if (responseEntity != null) {
-            String responseBody = EntityUtils.toString(responseEntity);
-            JSONObject responseJson = JSONObject.parseObject(responseBody);
-            JSONArray fetchedFields = responseJson.getJSONObject("data").getJSONArray("fields");
-            JSONArray fetchedData = responseJson.getJSONObject("data").getJSONArray("items");
+            JSONObject jsonParams = new JSONObject();
+            jsonParams.put("token", tushareToken);
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                jsonParams.put(entry.getKey(), entry.getValue());
+            }
+            String jsonParamsString = jsonParams.toString();
+            System.out.println("jsonParamsString: " + jsonParamsString);
+            StringEntity entity = new StringEntity(jsonParamsString, ContentType.APPLICATION_JSON);
+            request.setEntity(entity);
 
-            // System.out.println("Fields: " + fetchedFields);
-            // System.out.println("Data[0]: " + fetchedData.get(0));
+            try ( ClassicHttpResponse response = httpClient.execute(request) ) {
+                HttpEntity responseEntity = response.getEntity();
+                if (responseEntity != null) {
+                    String responseBody = EntityUtils.toString(responseEntity);
+                    JSONObject responseJson = JSONObject.parseObject(responseBody);
+                    JSONArray fetchedFields = responseJson.getJSONObject("data").getJSONArray("fields");
+                    JSONArray fetchedData = responseJson.getJSONObject("data").getJSONArray("items");
 
-            return responseJson;
-        } else {
-          return null;
+                    // System.out.println("Fields: " + fetchedFields);
+                    // System.out.println("Data[0]: " + fetchedData.get(0));
+
+                    return responseJson;
+                } else {
+                    return null;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-      } catch(Exception e){
-        e.printStackTrace();
-        return null;
-      }
-
-
-    } catch(Exception e){
-      e.printStackTrace();
-      return null;
     }
-  }
 }

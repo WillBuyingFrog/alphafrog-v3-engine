@@ -13,16 +13,16 @@ import world.willfrog.alphafrog.Service.TransactionRecordService;
 @Service
 public class TransactionRecordServiceImpl implements TransactionRecordService {
 
-  @Autowired
-  private TransactionRecordDao transactionRecordDao;
+    @Autowired
+    private TransactionRecordDao transactionRecordDao;
 
-  @Override
-  public void saveTransactionRecord(TransactionRecord transactionRecord) {
-    transactionRecordDao.insertTransactionRecord(transactionRecord);
-  }
+    @Override
+    public void saveTransactionRecord(TransactionRecord transactionRecord) {
+        transactionRecordDao.insertTransactionRecord(transactionRecord);
+    }
 
-  @Override
-  public List<TransactionRecord> getTransactionRecords(int page, int pageSize) {
-    return transactionRecordDao.getTransactionRecords(page, pageSize);
-  }
+    @Override
+    public List<TransactionRecord> getTransactionRecords(int page, int pageSize) {
+        return transactionRecordDao.getTransactionRecords(page, pageSize);
+    }
 }

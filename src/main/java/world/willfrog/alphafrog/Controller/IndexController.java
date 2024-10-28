@@ -20,9 +20,8 @@ import java.util.List;
 public class IndexController {
 
 
-  @Autowired
-  private IndexFetchService indexFetchService;
-
+    @Autowired
+    private IndexFetchService indexFetchService;
 
 
 }

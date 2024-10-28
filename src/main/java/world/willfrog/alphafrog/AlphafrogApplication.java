@@ -9,8 +9,8 @@ import org.mybatis.spring.annotation.MapperScan;
 @MapperScan("world.willfrog.alphafrog.Dao")
 public class AlphafrogApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AlphafrogApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AlphafrogApplication.class, args);
+    }
 
 }

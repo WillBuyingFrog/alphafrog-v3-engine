@@ -21,91 +21,93 @@ import java.util.Map;
 @Service
 public class FundPortfolioFetchServiceImpl implements FundPortfolioFetchService {
 
-  SqlSessionFactory sqlSessionFactory;
+    SqlSessionFactory sqlSessionFactory;
 
-  TushareRequestUtils tushareRequestUtils;
+    TushareRequestUtils tushareRequestUtils;
 
-  DateConvertUtils dateConvertUtils;
+    DateConvertUtils dateConvertUtils;
 
 
-  public FundPortfolioFetchServiceImpl(SqlSessionFactory sqlSessionFactory,
-                                        TushareRequestUtils tushareRequestUtils,
-                                        DateConvertUtils dateConvertUtils) {
-    this.sqlSessionFactory = sqlSessionFactory;
-    this.tushareRequestUtils = tushareRequestUtils;
-    this.dateConvertUtils = dateConvertUtils;
-  }
+    public FundPortfolioFetchServiceImpl(SqlSessionFactory sqlSessionFactory,
+                                         TushareRequestUtils tushareRequestUtils,
+                                         DateConvertUtils dateConvertUtils) {
+        this.sqlSessionFactory = sqlSessionFactory;
+        this.tushareRequestUtils = tushareRequestUtils;
+        this.dateConvertUtils = dateConvertUtils;
+    }
 
-  int storeFundPortfoliosByRawTuShareOutput(JSONArray data) {
-    List<FundPortfolio> fundPortfolioList = new ArrayList<>();
+    int storeFundPortfoliosByRawTuShareOutput(JSONArray data) {
+        List<FundPortfolio> fundPortfolioList = new ArrayList<>();
 
-    try{
-      for(int i = 0; i < data.size(); i++) {
-        JSONArray item = data.getJSONArray(i);
-        FundPortfolio fundPortfolio = new FundPortfolio();
-        fundPortfolio.setTsCode(item.getString(0));
+        int affectedRows = 0;
 
-        String annDateStr = item.getString(1);
-        fundPortfolio.setAnnDate(annDateStr == null ? null : dateConvertUtils.convertDateStrToLong(annDateStr, "yyyyMMdd"));
+        try {
+            for (int i = 0; i < data.size(); i++) {
+                JSONArray item = data.getJSONArray(i);
+                FundPortfolio fundPortfolio = new FundPortfolio();
+                fundPortfolio.setTsCode(item.getString(0));
 
-        String endDateStr = item.getString(2);
-        fundPortfolio.setEndDate(endDateStr == null ? null : dateConvertUtils.convertDateStrToLong(endDateStr, "yyyyMMdd"));
+                String annDateStr = item.getString(1);
+                fundPortfolio.setAnnDate(annDateStr == null ? null : dateConvertUtils.convertDateStrToLong(annDateStr, "yyyyMMdd"));
 
-        fundPortfolio.setSymbol(item.getString(3));
-        fundPortfolio.setMkv(item.getDouble(4));
-        fundPortfolio.setAmount(item.getDouble(5));
-        fundPortfolio.setStkMkvRatio(item.getDouble(6));
-        fundPortfolio.setStkFloatRatio(item.getDouble(7));
+                String endDateStr = item.getString(2);
+                fundPortfolio.setEndDate(endDateStr == null ? null : dateConvertUtils.convertDateStrToLong(endDateStr, "yyyyMMdd"));
 
-        fundPortfolioList.add(fundPortfolio);
-      }
+                fundPortfolio.setSymbol(item.getString(3));
+                fundPortfolio.setMkv(item.getDouble(4));
+                fundPortfolio.setAmount(item.getDouble(5));
+                fundPortfolio.setStkMkvRatio(item.getDouble(6));
+                fundPortfolio.setStkFloatRatio(item.getDouble(7));
 
-      try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
-        FundPortfolioDao fundPortfolioDao = sqlSession.getMapper(FundPortfolioDao.class);
-        for (FundPortfolio fundPortfolio : fundPortfolioList) {
-          fundPortfolioDao.insertFundPortfolio(fundPortfolio);
+                fundPortfolioList.add(fundPortfolio);
+            }
+
+            try ( SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH) ) {
+                FundPortfolioDao fundPortfolioDao = sqlSession.getMapper(FundPortfolioDao.class);
+                for (FundPortfolio fundPortfolio : fundPortfolioList) {
+                    affectedRows += fundPortfolioDao.insertFundPortfolio(fundPortfolio);
+                }
+                sqlSession.commit();
+            } catch (Exception e) {
+                System.out.println("Error occured while inserting fund portfolio data");
+                e.printStackTrace();
+                return -2;
+            }
+        } catch (Exception e) {
+            System.out.println("Error occured while converting fund portfolio raw data");
+            e.printStackTrace();
+            return -1; // Indicate failure
         }
-        sqlSession.commit();
-      } catch (Exception e) {
-        System.out.println("Error occured while inserting fund portfolio data");
-        e.printStackTrace();
-        return -2;
-      }
-    } catch (Exception e) {
-      System.out.println("Error occured while converting fund portfolio raw data");
-      e.printStackTrace();
-      return -1; // Indicate failure
+
+        return affectedRows;
     }
 
-    return fundPortfolioList.size();
-  }
+    @Override
+    public int directFetchFundPortfolioByTsCodeAndDateRange(String tsCode, String startDate, String endDate,
+                                                            int offset, int limit) {
+        // Implementation logic here
 
-  @Override
-  public int directFetchFundPortfolioByTsCodeAndDateRange(String tsCode, String startDate, String endDate,
-                                                          int offset, int limit) {
-    // Implementation logic here
+        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> queryParams = new HashMap<>();
 
-    Map<String, Object> params = new HashMap<>();
-    Map<String, Object> queryParams = new HashMap<>();
+        params.put("api_name", "fund_portfolio");
+        if (tsCode != null) {
+            queryParams.put("ts_code", tsCode);
+        }
+        queryParams.put("start_date", startDate);
+        queryParams.put("end_date", endDate);
+        queryParams.put("offset", offset);
+        queryParams.put("limit", limit);
+        params.put("params", queryParams);
+        params.put("fields", "ts_code,ann_date,end_date,symbol,mkv,amount,stk_mkv_ratio,stk_float_ratio");
 
-    params.put("api_name", "fund_portfolio");
-    if(tsCode != null) {
-      queryParams.put("ts_code", tsCode);
+        JSONObject ret = tushareRequestUtils.createTusharePostRequest(params);
+
+        JSONArray fields = ret.getJSONObject("data").getJSONArray("fields");
+        JSONArray data = ret.getJSONObject("data").getJSONArray("items");
+
+
+        return storeFundPortfoliosByRawTuShareOutput(data); // Placeholder return value
     }
-    queryParams.put("start_date", startDate);
-    queryParams.put("end_date", endDate);
-    queryParams.put("offset", offset);
-    queryParams.put("limit", limit);
-    params.put("params", queryParams);
-    params.put("fields", "ts_code,ann_date,end_date,symbol,mkv,amount,stk_mkv_ratio,stk_float_ratio");
-
-    JSONObject ret = tushareRequestUtils.createTusharePostRequest(params);
-
-    JSONArray fields = ret.getJSONObject("data").getJSONArray("fields");
-    JSONArray data = ret.getJSONObject("data").getJSONArray("items");
-
-
-    return storeFundPortfoliosByRawTuShareOutput(data); // Placeholder return value
-  }
 }
 

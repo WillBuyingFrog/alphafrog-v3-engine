@@ -6,7 +6,7 @@ import world.willfrog.alphafrog.Entity.TransactionRecord;
 
 public interface TransactionRecordService {
 
-  void saveTransactionRecord(TransactionRecord transactionRecord);
+    void saveTransactionRecord(TransactionRecord transactionRecord);
 
-  List<TransactionRecord> getTransactionRecords(int page, int pageSize);
+    List<TransactionRecord> getTransactionRecords(int page, int pageSize);
 }
