@@ -1,8 +1,4 @@
-package world.willfrog.alphafrog.Service;
-
-import world.willfrog.alphafrog.Entity.IndexDaily;
-
-import java.util.List;
+package world.willfrog.alphafrog.Service.Index;
 
 public interface IndexFetchService {
 

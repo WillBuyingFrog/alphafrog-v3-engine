@@ -1,4 +1,4 @@
-package world.willfrog.alphafrog.Entity;
+package world.willfrog.alphafrog.Entity.Fund;
 
 
 import jakarta.persistence.*;
@@ -20,21 +20,30 @@ public class FundNav {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long fundNavId;
 
+    // 基金代码
     @Column(name = "ts_code", nullable = false)
     String tsCode;
 
+    // 公告日期
     @Column(name = "ann_date")
     Long annDate;
 
+    // 净值日期
     @Column(name = "nav_date", nullable = false)
     Long navDate;
 
+    // 单位净值
     @Column(name = "unit_nav")
     Double unitNav;
 
+    // 累计净值
     @Column(name = "accum_nav")
     Double accumNav;
 
+    @Column(name = "accum_div")
+    Double accumDiv;
+
+    // 资产净值
     @Column(name = "net_asset")
     Double netAsset;
 

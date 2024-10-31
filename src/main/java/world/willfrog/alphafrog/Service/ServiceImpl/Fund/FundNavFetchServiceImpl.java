@@ -1,4 +1,4 @@
-package world.willfrog.alphafrog.Service.ServiceImpl;
+package world.willfrog.alphafrog.Service.ServiceImpl.Fund;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -8,10 +8,10 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import world.willfrog.alphafrog.Common.DateConvertUtils;
-import world.willfrog.alphafrog.Common.TushareRequestUtils;
-import world.willfrog.alphafrog.Dao.FundNavDao;
-import world.willfrog.alphafrog.Entity.FundNav;
-import world.willfrog.alphafrog.Service.FundNavFetchService;
+import world.willfrog.alphafrog.Common.TuShareRequestUtils;
+import world.willfrog.alphafrog.Dao.Fund.FundNavDao;
+import world.willfrog.alphafrog.Entity.Fund.FundNav;
+import world.willfrog.alphafrog.Service.Fund.FundNavFetchService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ public class FundNavFetchServiceImpl implements FundNavFetchService {
     @Autowired
     SqlSessionFactory sqlSessionFactory;
     @Autowired
-    TushareRequestUtils tushareRequestUtils;
+    TuShareRequestUtils tuShareRequestUtils;
     @Autowired
     DateConvertUtils DateConvertUtils;
 
@@ -52,9 +52,10 @@ public class FundNavFetchServiceImpl implements FundNavFetchService {
 
                 fundNav.setUnitNav(item.getDouble(3));
                 fundNav.setAccumNav(item.getDouble(4));
-                fundNav.setNetAsset(item.getDouble(5));
-                fundNav.setTotalNetAsset(item.getDouble(6));
-                fundNav.setAdjNav(item.getDouble(7));
+                fundNav.setAccumDiv(item.getDouble(5));
+                fundNav.setNetAsset(item.getDouble(6));
+                fundNav.setTotalNetAsset(item.getDouble(7));
+                fundNav.setAdjNav(item.getDouble(8));
                 fundNavList.add(fundNav);
             }
 
@@ -106,9 +107,9 @@ public class FundNavFetchServiceImpl implements FundNavFetchService {
         queryParams.put("limit", limit);
         params.put("params", queryParams);
         // 所有条目都要爬取
-        params.put("fields", "ts_code,ann_date,nav_date,unit_nav,accum_nav,net_asset,total_netasset,adj_nav");
+        params.put("fields", "ts_code,ann_date,nav_date,unit_nav,accum_nav,accum_div,net_asset,total_netasset,adj_nav");
 
-        JSONObject res = tushareRequestUtils.createTusharePostRequest(params);
+        JSONObject res = tuShareRequestUtils.createTusharePostRequest(params);
 
         if (res == null) {
             return -2;
@@ -148,7 +149,7 @@ public class FundNavFetchServiceImpl implements FundNavFetchService {
         // 所有条目都要爬取
         params.put("fields", "ts_code,ann_date,nav_date,unit_nav,accum_nav,net_asset,total_netasset,adj_nav");
 
-        JSONObject res = tushareRequestUtils.createTusharePostRequest(params);
+        JSONObject res = tuShareRequestUtils.createTusharePostRequest(params);
 
         if (res == null) {
             return -2;

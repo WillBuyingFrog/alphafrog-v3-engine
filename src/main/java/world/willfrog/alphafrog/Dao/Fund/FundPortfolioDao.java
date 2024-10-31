@@ -1,8 +1,8 @@
-package world.willfrog.alphafrog.Dao;
+package world.willfrog.alphafrog.Dao.Fund;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import world.willfrog.alphafrog.Entity.FundPortfolio;
+import world.willfrog.alphafrog.Entity.Fund.FundPortfolio;
 
 @Mapper
 public interface FundPortfolioDao {

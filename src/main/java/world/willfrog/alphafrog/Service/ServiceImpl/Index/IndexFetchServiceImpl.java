@@ -1,12 +1,12 @@
-package world.willfrog.alphafrog.Service.ServiceImpl;
+package world.willfrog.alphafrog.Service.ServiceImpl.Index;
 
 import world.willfrog.alphafrog.Common.DateConvertUtils;
-import world.willfrog.alphafrog.Dao.IndexInfoDao;
-import world.willfrog.alphafrog.Entity.IndexDaily;
-import world.willfrog.alphafrog.Dao.IndexDailyDao;
-import world.willfrog.alphafrog.Entity.IndexInfo;
-import world.willfrog.alphafrog.Service.IndexFetchService;
-import world.willfrog.alphafrog.Common.TushareRequestUtils;
+import world.willfrog.alphafrog.Dao.Index.IndexInfoDao;
+import world.willfrog.alphafrog.Entity.Index.IndexDaily;
+import world.willfrog.alphafrog.Dao.Index.IndexDailyDao;
+import world.willfrog.alphafrog.Entity.Index.IndexInfo;
+import world.willfrog.alphafrog.Service.Index.IndexFetchService;
+import world.willfrog.alphafrog.Common.TuShareRequestUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import com.alibaba.fastjson.JSONObject;
 public class IndexFetchServiceImpl implements IndexFetchService {
 
     @Autowired
-    private TushareRequestUtils tushareRequestUtils;
+    private TuShareRequestUtils tuShareRequestUtils;
 
     @Autowired
     private DateConvertUtils dateConvertUtils;
@@ -48,7 +48,7 @@ public class IndexFetchServiceImpl implements IndexFetchService {
         params.put("fields", "ts_code,name,fullname,market,publisher,index_type," +
                 "category,base_date,base_point,list_date,weight_rule,desc,exp_date");
 
-        JSONObject res = tushareRequestUtils.createTusharePostRequest(params);
+        JSONObject res = tuShareRequestUtils.createTusharePostRequest(params);
 
         if (res == null) {
             return -2;
@@ -162,7 +162,7 @@ public class IndexFetchServiceImpl implements IndexFetchService {
         params.put("params", queryParams);
         params.put("fields", "ts_code,trade_date,close,open,high,low,pre_close,change,pct_chg,vol,amount");
 
-        JSONObject res = tushareRequestUtils.createTusharePostRequest(params);
+        JSONObject res = tuShareRequestUtils.createTusharePostRequest(params);
 
         if (res == null) {
             return -2;

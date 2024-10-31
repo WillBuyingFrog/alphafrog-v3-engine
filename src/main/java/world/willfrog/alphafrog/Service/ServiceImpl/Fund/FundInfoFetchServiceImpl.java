@@ -1,4 +1,4 @@
-package world.willfrog.alphafrog.Service.ServiceImpl;
+package world.willfrog.alphafrog.Service.ServiceImpl.Fund;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -7,10 +7,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 import world.willfrog.alphafrog.Common.DateConvertUtils;
-import world.willfrog.alphafrog.Common.TushareRequestUtils;
-import world.willfrog.alphafrog.Dao.FundInfoDao;
-import world.willfrog.alphafrog.Entity.FundInfo;
-import world.willfrog.alphafrog.Service.FundInfoFetchService;
+import world.willfrog.alphafrog.Common.TuShareRequestUtils;
+import world.willfrog.alphafrog.Dao.Fund.FundInfoDao;
+import world.willfrog.alphafrog.Entity.Fund.FundInfo;
+import world.willfrog.alphafrog.Service.Fund.FundInfoFetchService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,15 +25,15 @@ public class FundInfoFetchServiceImpl implements FundInfoFetchService {
 
     DateConvertUtils dateConvertUtils;
 
-    TushareRequestUtils tushareRequestUtils;
+    TuShareRequestUtils tuShareRequestUtils;
 
 
     public FundInfoFetchServiceImpl(DateConvertUtils dateConvertUtils,
-                                     TushareRequestUtils tushareRequestUtils,
+                                     TuShareRequestUtils tushareRequestUtils,
                                      SqlSessionFactory sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
         this.dateConvertUtils = dateConvertUtils;
-        this.tushareRequestUtils = tushareRequestUtils;
+        this.tuShareRequestUtils = tushareRequestUtils;
     }
 
     int storeFundInfosByRawTuShareOutput(JSONArray data) {
@@ -125,7 +125,7 @@ public class FundInfoFetchServiceImpl implements FundInfoFetchService {
                 "delist_date,issue_amount,m_fee,c_fee,duration_year,p_value,min_amount,exp_return,benchmark,status," +
                 "invest_type,type,trustee,purc_startdate,redm_startdate,market");
 
-        JSONObject ret = tushareRequestUtils.createTusharePostRequest(params);
+        JSONObject ret = tuShareRequestUtils.createTusharePostRequest(params);
 
         JSONArray fields = ret.getJSONObject("data").getJSONArray("fields");
         JSONArray data = ret.getJSONObject("data").getJSONArray("items");
@@ -148,7 +148,7 @@ public class FundInfoFetchServiceImpl implements FundInfoFetchService {
                 "delist_date,issue_amount,m_fee,c_fee,duration_year,p_value,min_amount,exp_return,benchmark,status," +
                 "invest_type,type,trustee,purc_startdate,redm_startdate,market");
 
-        JSONObject ret = tushareRequestUtils.createTusharePostRequest(params);
+        JSONObject ret = tuShareRequestUtils.createTusharePostRequest(params);
 
         JSONArray fields = ret.getJSONObject("data").getJSONArray("fields");
         JSONArray data = ret.getJSONObject("data").getJSONArray("items");

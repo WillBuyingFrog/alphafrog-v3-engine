@@ -1,8 +1,8 @@
-package world.willfrog.alphafrog.Dao;
+package world.willfrog.alphafrog.Dao.Index;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import world.willfrog.alphafrog.Entity.IndexInfo;
+import world.willfrog.alphafrog.Entity.Index.IndexInfo;
 
 import java.util.List;
 

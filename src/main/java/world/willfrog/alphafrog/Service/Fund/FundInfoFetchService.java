@@ -1,4 +1,4 @@
-package world.willfrog.alphafrog.Service;
+package world.willfrog.alphafrog.Service.Fund;
 
 public interface FundInfoFetchService {
 

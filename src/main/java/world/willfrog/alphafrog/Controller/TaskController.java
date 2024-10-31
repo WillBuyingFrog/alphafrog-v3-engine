@@ -48,6 +48,7 @@ public class TaskController {
     }
 
 
+
     private String getTopicForTaskType(String taskType) {
         switch (taskType) {
             case "fetch":

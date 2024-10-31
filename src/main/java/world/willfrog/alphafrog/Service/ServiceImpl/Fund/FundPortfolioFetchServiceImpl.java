@@ -1,4 +1,4 @@
-package world.willfrog.alphafrog.Service.ServiceImpl;
+package world.willfrog.alphafrog.Service.ServiceImpl.Fund;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -8,10 +8,10 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 
 import world.willfrog.alphafrog.Common.DateConvertUtils;
-import world.willfrog.alphafrog.Common.TushareRequestUtils;
-import world.willfrog.alphafrog.Dao.FundPortfolioDao;
-import world.willfrog.alphafrog.Service.FundPortfolioFetchService;
-import world.willfrog.alphafrog.Entity.FundPortfolio;
+import world.willfrog.alphafrog.Common.TuShareRequestUtils;
+import world.willfrog.alphafrog.Dao.Fund.FundPortfolioDao;
+import world.willfrog.alphafrog.Service.Fund.FundPortfolioFetchService;
+import world.willfrog.alphafrog.Entity.Fund.FundPortfolio;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,16 +23,16 @@ public class FundPortfolioFetchServiceImpl implements FundPortfolioFetchService 
 
     SqlSessionFactory sqlSessionFactory;
 
-    TushareRequestUtils tushareRequestUtils;
+    TuShareRequestUtils tuShareRequestUtils;
 
     DateConvertUtils dateConvertUtils;
 
 
     public FundPortfolioFetchServiceImpl(SqlSessionFactory sqlSessionFactory,
-                                         TushareRequestUtils tushareRequestUtils,
+                                         TuShareRequestUtils tushareRequestUtils,
                                          DateConvertUtils dateConvertUtils) {
         this.sqlSessionFactory = sqlSessionFactory;
-        this.tushareRequestUtils = tushareRequestUtils;
+        this.tuShareRequestUtils = tushareRequestUtils;
         this.dateConvertUtils = dateConvertUtils;
     }
 
@@ -101,7 +101,7 @@ public class FundPortfolioFetchServiceImpl implements FundPortfolioFetchService 
         params.put("params", queryParams);
         params.put("fields", "ts_code,ann_date,end_date,symbol,mkv,amount,stk_mkv_ratio,stk_float_ratio");
 
-        JSONObject ret = tushareRequestUtils.createTusharePostRequest(params);
+        JSONObject ret = tuShareRequestUtils.createTusharePostRequest(params);
 
         JSONArray fields = ret.getJSONObject("data").getJSONArray("fields");
         JSONArray data = ret.getJSONObject("data").getJSONArray("items");

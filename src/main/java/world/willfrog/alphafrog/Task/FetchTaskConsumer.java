@@ -5,28 +5,39 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import world.willfrog.alphafrog.Service.FundInfoFetchService;
-import world.willfrog.alphafrog.Service.FundNavFetchService;
-import world.willfrog.alphafrog.Service.IndexFetchService;
-import world.willfrog.alphafrog.Service.FundPortfolioFetchService;
+import world.willfrog.alphafrog.Service.Fund.FundInfoFetchService;
+import world.willfrog.alphafrog.Service.Fund.FundNavFetchService;
+import world.willfrog.alphafrog.Service.Index.IndexFetchService;
+import world.willfrog.alphafrog.Service.Fund.FundPortfolioFetchService;
 
 import com.alibaba.fastjson.JSONObject;
-import world.willfrog.alphafrog.Service.ServiceImpl.FundInfoFetchServiceImpl;
+import world.willfrog.alphafrog.Service.Index.IndexQuoteFetchService;
+import world.willfrog.alphafrog.Service.Index.IndexWeightFetchService;
 
 
 @Service
-public class TaskConsumer {
+public class FetchTaskConsumer {
 
     final IndexFetchService indexFetchService;
+    final IndexQuoteFetchService indexQuoteFetchService;
+    final IndexWeightFetchService indexWeightFetchService;
 
     final FundNavFetchService fundNavFetchService;
     final FundPortfolioFetchService fundPortfolioFetchService;
     final FundInfoFetchService fundInfoFetchService;
 
 
-    public TaskConsumer(IndexFetchService indexFetchService, FundNavFetchService fundNavFetchService,
-                        FundPortfolioFetchService fundPortfolioFetchService, FundInfoFetchService fundInfoFetchService) {
+    public FetchTaskConsumer(IndexFetchService indexFetchService,
+                             IndexQuoteFetchService indexQuoteFetchService,
+                             IndexWeightFetchService indexWeightFetchService,
+                             FundNavFetchService fundNavFetchService,
+                             FundPortfolioFetchService fundPortfolioFetchService,
+                             FundInfoFetchService fundInfoFetchService) {
         this.indexFetchService = indexFetchService;
+        this.indexQuoteFetchService = indexQuoteFetchService;
+        this.indexWeightFetchService = indexWeightFetchService;
+
+
         this.fundNavFetchService = fundNavFetchService;
         this.fundPortfolioFetchService = fundPortfolioFetchService;
         this.fundInfoFetchService = fundInfoFetchService;
@@ -45,13 +56,45 @@ public class TaskConsumer {
             int result;
 
             switch (taskName) {
-                case "index_daily":
-                    result = indexFetchService.directFetchIndexDailyByTsCodeAndDateRange(taskParams.getString("ts_code"),
-                            taskParams.getString("start_date"), taskParams.getString("end_date"));
-                    break;
                 case "index_basic":
                     result = indexFetchService.directFetchIndexInfoByMarket(taskParams.getString("market"),
                             taskParams.getInteger("offset"));
+                    break;
+                case "index_quote":
+                    switch (taskSubtype) {
+                        case 1:
+                            result = indexQuoteFetchService.directFetchIndexDailyByTsCodeAndDateRange(
+                                    taskParams.getString("ts_code"),
+                                    taskParams.getString("start_date"), taskParams.getString("end_date"),
+                                    taskParams.getInteger("offset"), taskParams.getInteger("limit"));
+                            break;
+                        case 2:
+                            result = indexQuoteFetchService.directFetchIndexDailyByTradeDate(
+                                    taskParams.getString("trade_date"),
+                                    taskParams.getInteger("offset"), taskParams.getInteger("limit"));
+                            break;
+                        default:
+                            // Handle unknown taskSubtype
+                            result = -1;
+                            break;
+                    }
+                    break;
+
+                case "index_weight":
+                    if (taskSubtype == 1) {
+                        result = indexWeightFetchService.directFetchIndexWeightByIndexCodeAndDateRange(
+                                taskParams.getString("index_code"),
+                                taskParams.getString("start_date"), taskParams.getString("end_date"),
+                                taskParams.getInteger("offset"), taskParams.getInteger("limit"));
+                    } else if (taskSubtype == 2) {
+                        result = indexWeightFetchService.directFetchIndexWeightByTsCodeAndDateRange(
+                                taskParams.getString("ts_code"),
+                                taskParams.getString("start_date"), taskParams.getString("end_date"),
+                                taskParams.getInteger("offset"), taskParams.getInteger("limit"));
+                    } else {
+                        // 不存在这样的子任务类型
+                        result = -1;
+                    }
                     break;
                 case "fund_nav":
                     if (taskSubtype == 1) {

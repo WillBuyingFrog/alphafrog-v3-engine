@@ -1,4 +1,4 @@
-package world.willfrog.alphafrog.Dao;
+package world.willfrog.alphafrog.Dao.Index;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Mapper;
 
-import world.willfrog.alphafrog.Entity.IndexDaily;
+import world.willfrog.alphafrog.Entity.Index.IndexDaily;
 
 @Mapper
 public interface IndexDailyDao {

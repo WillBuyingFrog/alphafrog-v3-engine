@@ -1,4 +1,4 @@
-package world.willfrog.alphafrog.Entity;
+package world.willfrog.alphafrog.Entity.Fund;
 
 import jakarta.persistence.*;
 

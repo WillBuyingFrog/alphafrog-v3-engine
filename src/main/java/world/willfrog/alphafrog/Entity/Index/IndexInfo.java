@@ -1,10 +1,7 @@
-package world.willfrog.alphafrog.Entity;
+package world.willfrog.alphafrog.Entity.Index;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.util.ProxyUtils;
-
-import java.util.Objects;
 
 @Getter
 @Setter

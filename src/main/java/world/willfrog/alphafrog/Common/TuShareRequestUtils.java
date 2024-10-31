@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @PropertySource("classpath:application.yml")
-public class TushareRequestUtils {
+public class TuShareRequestUtils {
 
     @Value("${tushare.token}")
     private String tushareToken;

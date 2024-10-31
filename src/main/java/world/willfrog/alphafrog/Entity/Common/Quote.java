@@ -1,25 +1,12 @@
-package world.willfrog.alphafrog.Entity;
+package world.willfrog.alphafrog.Entity.Common;
 
-import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
-import lombok.Data;
-import org.springframework.data.util.ProxyUtils;
+import jakarta.persistence.Column;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.Objects;
-
-@Data
-@Entity
-@Table(name = "alphafrog_index_daily",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"ts_code", "trade_date"})
-        }
-)
-@NoArgsConstructor
-public class IndexDaily {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long indexDailyId;
-
+@Getter
+@Setter
+public class Quote {
     @Column(name = "ts_code")
     String tsCode;
 
