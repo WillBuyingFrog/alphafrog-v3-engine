@@ -17,7 +17,7 @@ pipeline {
             steps {
                 sh 'docker stop alphafrog-v3 || true'
                 sh 'docker rm alphafrog-v3 || true'
-                sh 'docker run -d --name alphafrog-v3 -p 8080:8080 alphafrog-v3:latest'
+                sh 'docker run -d --name alphafrog-v3 -p 8090:8090 alphafrog-v3:latest'
             }
         }
     }
