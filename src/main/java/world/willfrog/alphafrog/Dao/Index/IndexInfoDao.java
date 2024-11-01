@@ -2,7 +2,10 @@ package world.willfrog.alphafrog.Dao.Index;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import world.willfrog.alphafrog.Entity.Index.IndexDaily;
 import world.willfrog.alphafrog.Entity.Index.IndexInfo;
+import world.willfrog.alphafrog.Entity.Index.IndexWeight;
 
 import java.util.List;
 
@@ -14,15 +17,18 @@ public interface IndexInfoDao {
             "ON CONFLICT (ts_code) DO NOTHING")
     int insertIndexInfo(IndexInfo indexInfo);
 
-    @Insert("<script>" +
-            "INSERT INTO alphafrog_index_info (ts_code, name, fullname, market, publisher, index_type, category, base_date, base_point, list_date, weight_rule,\"desc\", exp_date) " +
-            "VALUES " +
-            "<foreach collection='indexInfoList' item='indexInfo' separator=','>" +
-            "(#{indexInfo.tsCode}, #{indexInfo.name}, #{indexInfo.fullName}, #{indexInfo.market}, #{indexInfo.publisher}, #{indexInfo.indexType}, #{indexInfo.category}, #{indexInfo.baseDate}, #{indexInfo.basePoint}, #{indexInfo.listDate}, #{indexInfo.weightRule}, #{indexInfo.desc}, #{indexInfo.expDate})" +
-            "</foreach>" +
-            "ON CONFLICT (ts_code) DO NOTHING" +
-            "</script>")
-    int insertIndexInfos(List<IndexInfo> indexInfoList);
+    @Select("SELECT * FROM alphafrog_index_info WHERE ts_code like '%${tsCode}%'")
+    List<IndexInfo> getIndexInfoByTsCode(String tsCode);
+
+    @Select("SELECT * FROM alphafrog_index_info WHERE fullname like '%${fullName}%'")
+    List<IndexInfo> getIndexInfoByFullName(String fullName);
+
+    @Select("SELECT * FROM alphafrog_index_info WHERE name like '%${name}%'")
+    List<IndexInfo> getIndexInfoByName(String name);
+
+    List<IndexDaily> getIndexDailyByTsCodeAndDateRange(String tsCode, Long startDate, Long endDate);
+
+    List<IndexWeight> getIndexWeightByTsCodeAndDateRange(String tsCode, Long startDate, Long endDate);
 
 
 }
