@@ -39,3 +39,7 @@ build/
 ### Maven ###
 
 .mvn
+
+
+### Sensitive Information ###
+application.yml

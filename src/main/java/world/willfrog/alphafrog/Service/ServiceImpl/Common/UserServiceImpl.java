@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import world.willfrog.alphafrog.Common.JwtUtils;
 import world.willfrog.alphafrog.Dao.Common.UserDao;
 import world.willfrog.alphafrog.Entity.Common.User;
+import world.willfrog.alphafrog.Service.Common.JwtService;
 import world.willfrog.alphafrog.Service.Common.UserService;
 
 import java.util.HashMap;
@@ -15,8 +16,14 @@ import java.util.Map;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserDao userDao;
+    private final UserDao userDao;
+
+    private final JwtService jwtService;
+
+    public UserServiceImpl(UserDao userDao, JwtService jwtService) {
+        this.userDao = userDao;
+        this.jwtService = jwtService;
+    }
 
     @Override
     public int checkNewUsername(String username) {
@@ -54,7 +61,7 @@ public class UserServiceImpl implements UserService {
             if (user.getPassword().equals(password)) {
                 Map<String, Object> info = new HashMap<>();
                 info.put("userType", user.getUserType());
-                return JwtUtils.sign(user.getUserId().toString(), info);
+                return jwtService.generateAndSaveToken(user.getUserId().toString(), info, 30 * 60 * 1000);
             } else {
                 return "ERR*Incorrect password";
             }

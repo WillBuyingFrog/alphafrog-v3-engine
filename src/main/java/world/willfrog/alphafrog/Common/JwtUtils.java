@@ -20,15 +20,12 @@ public class JwtUtils {
 
     private static final SecretKey KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
-    public static String sign(String userId, Map<String, Object> info) {
+    public static String sign(String userId, Map<String, Object> info, Date expireTime) {
         try {
-            Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
-
-
             return Jwts.builder()
                     .subject(userId)
                     .claim("info", info.toString())
-                    .expiration(date)
+                    .expiration(expireTime)
                     .signWith(KEY)
                     .compact();
 
