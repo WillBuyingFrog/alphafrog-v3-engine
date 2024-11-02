@@ -21,10 +21,11 @@ public class User {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     Long userId;
 
     @Column(name = "username")
-    String userName;
+    String username;
 
     @Column(name = "password")
     String password;
@@ -43,5 +44,19 @@ public class User {
 
     @Column(name = "credit")
     Integer credit;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", registerTime=" + registerTime +
+                ", userType=" + userType +
+                ", UserLevel=" + UserLevel +
+                ", credit=" + credit +
+                '}';
+    }
 
 }

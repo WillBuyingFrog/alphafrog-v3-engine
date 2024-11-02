@@ -5,9 +5,13 @@ import world.willfrog.alphafrog.Entity.Common.User;
 
 public interface UserService {
 
+    int checkNewUsername(String username);
+
+    int checkNewEmail(String email);
+
     User createUser(String username, String password, String email, long registerTime);
 
-    int login(String username, String password);
+    String login(String username, String password);
 
     User getUserById(String userId);
 
