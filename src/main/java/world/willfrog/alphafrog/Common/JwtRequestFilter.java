@@ -34,27 +34,27 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
     {
 
-        System.out.println("Request path: " + request.getServletPath());
+//        System.out.println("Request path: " + request.getServletPath());
         try {
 
-            // 不被过滤的选项
+            // 用户注册登录
             if (request.getServletPath().equals("/user/register") ||
-                    request.getServletPath().equals("/user/login") ||
-                    request.getServletPath().startsWith("/public")) {
+                    request.getServletPath().equals("/user/login")) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
+
             final String authorizationHeader = request.getHeader("Authorization");
 
-            System.out.println("Authorization header: " + authorizationHeader);
+//            System.out.println("Authorization header: " + authorizationHeader);
 
             String userId;
             String token;
 
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 token = authorizationHeader.substring(7);
-                System.out.println("Token: " + token);
+//                System.out.println("Token: " + token);
                 if(JwtUtils.checkSign(token)) {
                     userId = stringRedisTemplate.opsForValue().get("token:" + token);
                     if(userId != null){

@@ -26,8 +26,9 @@ public class SecurityConfig {
                 .securityContext(securityContext -> securityContext.requireExplicitSave(false))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/user/login").permitAll()
-                        .requestMatchers("/user/register").permitAll()
+                        .requestMatchers("/user/login").permitAll()         // 用户登录
+                        .requestMatchers("/user/register").permitAll()      // 用户注册
+                        .requestMatchers("/index/get/**").permitAll()          // 指数信息
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

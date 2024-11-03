@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import world.willfrog.alphafrog.Dao.Index.IndexInfoDao;
+import world.willfrog.alphafrog.Dao.Index.IndexDailyDao;
+import world.willfrog.alphafrog.Dao.Index.IndexWeightDao;
 import world.willfrog.alphafrog.Entity.Index.IndexDaily;
 import world.willfrog.alphafrog.Entity.Index.IndexInfo;
 import world.willfrog.alphafrog.Entity.Index.IndexWeight;
@@ -17,9 +19,13 @@ import java.util.List;
 public class IndexInformationUserServiceImpl implements IndexInformationUserService {
 
     IndexInfoDao indexInfoDao;
+    IndexDailyDao indexDailyDao;
+    IndexWeightDao indexWeightDao;
 
-    public IndexInformationUserServiceImpl(IndexInfoDao indexInfoDao) {
+    public IndexInformationUserServiceImpl(IndexInfoDao indexInfoDao, IndexDailyDao indexDailyDao, IndexWeightDao indexWeightDao) {
         this.indexInfoDao = indexInfoDao;
+        this.indexDailyDao = indexDailyDao;
+        this.indexWeightDao = indexWeightDao;
     }
 
 
@@ -60,16 +66,31 @@ public class IndexInformationUserServiceImpl implements IndexInformationUserServ
     }
 
     @Override
-    public List<IndexDaily> getIndexDailyByTsCodeAndDateRange(String tsCode, String startDate, String endDate) {
+    public List<IndexDaily> getIndexDailyByTsCodeAndDateRange(String tsCode, long startDate, long endDate) {
 
         List<IndexDaily> indexDailyList = new ArrayList<>();
+
+        try {
+            indexDailyList.addAll(indexDailyDao.getIndexDailiesByTsCodeAndDateRange(tsCode, startDate, endDate));
+
+        } catch (Exception e) {
+            log.error("Error occurred while querying IndexDaily by ts_code and date range");
+            log.error("Stack trace info", e);
+        }
 
         return indexDailyList;
     }
 
     @Override
-    public List<IndexWeight> getIndexWeightByTsCodeAndDateRange(String tsCode, String startDate, String endDate) {
+    public List<IndexWeight> getIndexWeightByTsCodeAndDateRange(String tsCode, long startDate, long endDate) {
         List<IndexWeight> indexWeightList = new ArrayList<>();
+
+        try {
+            indexWeightList.addAll(indexWeightDao.getIndexWeightsByTsCodeAndDateRange(tsCode, startDate, endDate));
+        } catch (Exception e) {
+            log.error("Error occurred while querying IndexWeight by ts_code and date range");
+            log.error("Stack trace info", e);
+        }
 
         return indexWeightList;
     }
