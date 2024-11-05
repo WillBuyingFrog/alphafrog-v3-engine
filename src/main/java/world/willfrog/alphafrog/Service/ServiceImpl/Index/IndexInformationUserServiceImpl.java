@@ -1,6 +1,7 @@
 package world.willfrog.alphafrog.Service.ServiceImpl.Index;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import world.willfrog.alphafrog.Dao.Index.IndexInfoDao;
@@ -61,6 +62,25 @@ public class IndexInformationUserServiceImpl implements IndexInformationUserServ
         }
         
 
+
+        return indexInfoList;
+    }
+
+    @Override
+    public List<IndexInfo> searchIndexInfo(String queryStr){
+        List<IndexInfo> indexInfoList = new ArrayList<>();
+
+        try {
+            List<IndexInfo> queryTsCodeResult = indexInfoDao.getIndexInfoByTsCode(queryStr);
+            List<IndexInfo> queryFullNameResult = indexInfoDao.getIndexInfoByFullName(queryStr);
+            List<IndexInfo> queryNameResult = indexInfoDao.getIndexInfoByName(queryStr);
+            indexInfoList.addAll(queryTsCodeResult);
+            indexInfoList.addAll(queryFullNameResult);
+            indexInfoList.addAll(queryNameResult);
+        } catch (Exception e) {
+            log.error("Error occurred while querying IndexInfo by search string");
+            log.error("Stack trace info", e);
+        }
 
         return indexInfoList;
     }

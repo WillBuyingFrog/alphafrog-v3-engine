@@ -12,6 +12,8 @@ public interface IndexInformationUserService {
 
     List<IndexInfo> getIndexInfoByNames(String queryName);
 
+    List<IndexInfo> searchIndexInfo(String queryStr);
+
     List<IndexDaily> getIndexDailyByTsCodeAndDateRange(String tsCode, long startDate, long endDate);
 
     List<IndexWeight> getIndexWeightByTsCodeAndDateRange(String tsCode, long startDate, long endDate);

@@ -51,6 +51,21 @@ public class IndexController {
         return ResponseEntity.ok(ret.toJSONString());
     }
 
+    @GetMapping("/get/search")
+    public ResponseEntity<String> searchIndexInfo(@RequestParam(name = "query") String query) {
+        if(query == null) {
+            return ResponseEntity.badRequest().body("query is required");
+        }
+
+        List<IndexInfo> indexInfoList = indexInformationUserService.searchIndexInfo(query);
+
+        JSONObject ret = new JSONObject();
+        ret.put("0", indexInfoList);
+
+        return ResponseEntity.ok(ret.toJSONString());
+    }
+
+
     @GetMapping("/get/daily")
     public ResponseEntity<String> getIndexDaily(@RequestParam(name = "ts_code") String tsCode,
                                                 @RequestParam(name = "start_date", required = false) String startDate,
