@@ -41,12 +41,12 @@ public class IndexController {
             List<IndexInfo> indexInfoList = indexInformationUserService.getIndexInfoByTsCode(tsCode);
         
             // 默认只返回第一个结果        
-            ret.put("0", indexInfoList.get(0));
+            ret.put("result", indexInfoList.get(0));
         } else {
             // 按照指数名称进行搜索
             List<IndexInfo> indexInfoList = indexInformationUserService.getIndexInfoByNames(queryName);
 
-            ret.put("0", indexInfoList);
+            ret.put("result", indexInfoList);
         }
         return ResponseEntity.ok(ret.toJSONString());
     }
@@ -60,7 +60,7 @@ public class IndexController {
         List<IndexInfo> indexInfoList = indexInformationUserService.searchIndexInfo(query);
 
         JSONObject ret = new JSONObject();
-        ret.put("0", indexInfoList);
+        ret.put("result", indexInfoList);
 
         return ResponseEntity.ok(ret.toJSONString());
     }
