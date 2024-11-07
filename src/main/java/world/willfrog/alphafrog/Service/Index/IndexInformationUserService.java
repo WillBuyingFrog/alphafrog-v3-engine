@@ -12,7 +12,7 @@ public interface IndexInformationUserService {
 
     List<IndexInfo> getIndexInfoByNames(String queryName);
 
-    List<IndexInfo> searchIndexInfo(String queryStr);
+    List<IndexInfo> searchIndexInfo(String queryStr, int page, int pageSize);
 
     List<IndexDaily> getIndexDailyByTsCodeAndDateRange(String tsCode, long startDate, long endDate);
 

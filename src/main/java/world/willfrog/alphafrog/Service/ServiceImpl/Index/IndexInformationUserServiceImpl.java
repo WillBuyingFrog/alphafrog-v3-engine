@@ -67,9 +67,10 @@ public class IndexInformationUserServiceImpl implements IndexInformationUserServ
     }
 
     @Override
-    public List<IndexInfo> searchIndexInfo(String queryStr){
+    public List<IndexInfo> searchIndexInfo(String queryStr, int page, int pageSize) {
         List<IndexInfo> indexInfoList = new ArrayList<>();
 
+        List<IndexInfo> indexInfoRetList = new ArrayList<>();
         try {
             List<IndexInfo> queryTsCodeResult = indexInfoDao.getIndexInfoByTsCode(queryStr);
             List<IndexInfo> queryFullNameResult = indexInfoDao.getIndexInfoByFullName(queryStr);
@@ -77,12 +78,21 @@ public class IndexInformationUserServiceImpl implements IndexInformationUserServ
             indexInfoList.addAll(queryTsCodeResult);
             indexInfoList.addAll(queryFullNameResult);
             indexInfoList.addAll(queryNameResult);
+
+            // 查询内容页数超过所有记录条数，返回空记录
+            if(indexInfoList.size() <= (page - 1) * pageSize) {
+                return new ArrayList<>();
+            }
+
+            for(int i = (page - 1) * pageSize; i < page * pageSize && i < indexInfoList.size(); i++) {
+                indexInfoRetList.add(indexInfoList.get(i));
+            }
         } catch (Exception e) {
             log.error("Error occurred while querying IndexInfo by search string");
             log.error("Stack trace info", e);
         }
 
-        return indexInfoList;
+        return indexInfoRetList;
     }
 
     @Override

@@ -1,13 +1,15 @@
 package world.willfrog.alphafrog.Service.ServiceImpl.Common;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import world.willfrog.alphafrog.Common.JwtUtils;
 import world.willfrog.alphafrog.Dao.Common.UserDao;
 import world.willfrog.alphafrog.Entity.Common.User;
 import world.willfrog.alphafrog.Service.Common.JwtService;
 import world.willfrog.alphafrog.Service.Common.UserService;
+
+import java.util.concurrent.TimeUnit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,9 +22,12 @@ public class UserServiceImpl implements UserService {
 
     private final JwtService jwtService;
 
-    public UserServiceImpl(UserDao userDao, JwtService jwtService) {
+    private final StringRedisTemplate stringRedisTemplate;
+
+    public UserServiceImpl(UserDao userDao, JwtService jwtService, StringRedisTemplate stringRedisTemplate) {
         this.userDao = userDao;
         this.jwtService = jwtService;
+        this.stringRedisTemplate = stringRedisTemplate;
     }
 
     @Override
@@ -56,12 +61,31 @@ public class UserServiceImpl implements UserService {
                 return "ERR*User not found";
             }
 
+            // 获取今天的bitmap key
+            String today = String.format("user_login_bitmap:%d", System.currentTimeMillis() / (24*60*60*1000));
+            
+            // 检查bitmap是否存在,不存在则创建
+            boolean exists = Boolean.TRUE.equals(stringRedisTemplate.hasKey(today));
+            if (!exists) {
+                stringRedisTemplate.opsForValue().set(today, "");
+                // 设置过期时间为2天,确保第二天还能查到昨天的登录状态
+                stringRedisTemplate.expire(today, 2, TimeUnit.DAYS);
+            }
+            
+            // 检查用户是否已登录
+            Boolean isLoggedIn = stringRedisTemplate.opsForValue().getBit(today, user.getUserId());
+            if (Boolean.TRUE.equals(isLoggedIn)) {
+                return "ERR*User already logged in";
+            }
+
             System.out.println("User found: " + user);
 
             if (user.getPassword().equals(password)) {
+                stringRedisTemplate.opsForValue().setBit(today, user.getUserId(), true);
+
                 Map<String, Object> info = new HashMap<>();
                 info.put("userType", user.getUserType());
-                return jwtService.generateAndSaveToken(user.getUserId().toString(), info, 30 * 60 * 1000);
+                return jwtService.generateAndSaveToken(user.getUserId().toString(), 30 * 60 * 1000);
             } else {
                 return "ERR*Incorrect password";
             }
@@ -69,6 +93,26 @@ public class UserServiceImpl implements UserService {
             log.error("Error occurred while logging in: ");
             log.error("Full Stack Trace", e);
             return "ERR*";
+        }
+    }
+
+    @Override
+    public int logout(String token){
+        try {
+            String userId = JwtUtils.extractUserId(token);
+            if (userId == null) {
+                return 1;
+            }
+            String today = String.format("user_login_bitmap:%d", System.currentTimeMillis() / (24*60*60*1000));
+            stringRedisTemplate.opsForValue().setBit(today, Long.parseLong(userId), false);
+            // 删除token
+            stringRedisTemplate.delete("token:" + token);
+
+            return 0;
+        } catch (Exception e) {
+            log.error("Error occurred while logging out: ");
+            log.error("Full Stack Trace", e);
+            return 1;
         }
     }
 

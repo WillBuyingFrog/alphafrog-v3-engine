@@ -19,10 +19,10 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String generateAndSaveToken(String userId, Map<String, Object> info, long expireTime) {
+    public String generateAndSaveToken(String userId, long expireTime) {
 
         Date expireDate = new Date(System.currentTimeMillis() + expireTime);
-        String token = JwtUtils.sign(userId, info, expireDate);
+        String token = JwtUtils.sign(userId, expireDate);
         stringRedisTemplate.opsForValue().set("token:" + token, userId, expireTime, TimeUnit.MILLISECONDS);
         return token;
     }

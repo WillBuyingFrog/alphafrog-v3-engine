@@ -4,5 +4,5 @@ import java.util.Map;
 
 public interface JwtService {
 
-    String generateAndSaveToken(String userId, Map<String, Object> map, long expireTime);
+    String generateAndSaveToken(String userId, long expireTime);
 }

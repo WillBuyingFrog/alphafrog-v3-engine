@@ -52,12 +52,14 @@ public class IndexController {
     }
 
     @GetMapping("/get/search")
-    public ResponseEntity<String> searchIndexInfo(@RequestParam(name = "query") String query) {
+    public ResponseEntity<String> searchIndexInfo(@RequestParam(name = "query") String query,
+                                                  @RequestParam(name = "page") int page,
+                                                  @RequestParam(name = "page_size") int pageSize) {
         if(query == null) {
             return ResponseEntity.badRequest().body("query is required");
         }
 
-        List<IndexInfo> indexInfoList = indexInformationUserService.searchIndexInfo(query);
+        List<IndexInfo> indexInfoList = indexInformationUserService.searchIndexInfo(query, page, pageSize);
 
         JSONObject ret = new JSONObject();
         ret.put("result", indexInfoList);

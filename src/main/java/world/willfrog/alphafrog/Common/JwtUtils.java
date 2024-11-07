@@ -1,5 +1,7 @@
 package world.willfrog.alphafrog.Common;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -20,17 +22,16 @@ public class JwtUtils {
 
     private static final SecretKey KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
-    public static String sign(String userId, Map<String, Object> info, Date expireTime) {
+    public static String sign(String userId, Date expireTime) {
         try {
             return Jwts.builder()
                     .subject(userId)
-                    .claim("info", info.toString())
                     .expiration(expireTime)
                     .signWith(KEY)
                     .compact();
 
         } catch (Exception e) {
-            log.error("Error occurred while signing new token for user #" + userId);
+            log.error("Error occurred while signing new token for user #{}", userId);
             log.error("Error Stack Trace:", e);
             return null;
         }
@@ -58,4 +59,8 @@ public class JwtUtils {
             return null;
         }
     }
+
+
+
+
 }

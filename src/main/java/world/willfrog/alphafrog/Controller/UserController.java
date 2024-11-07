@@ -44,6 +44,24 @@ public class UserController {
 
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody Map<String, Object> map) {
+
+        JSONObject res = new JSONObject();
+        JSONObject logoutInfo = new JSONObject(map);
+
+        int temp = userService.logout(logoutInfo.getString("token"));
+
+        if (temp == 1){
+            res.put("message", "ERR*Token not found");
+            return ResponseEntity.status(401).body(res.toString());
+        } else {
+            res.put("message", "Logout successfully");
+            return ResponseEntity.ok(res.toString());
+        }
+
+    }
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody Map<String, Object> map) {
 

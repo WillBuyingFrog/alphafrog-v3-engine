@@ -13,6 +13,8 @@ public interface UserService {
 
     String login(String username, String password);
 
+    int logout(String token);
+
     User getUserById(String userId);
 
     User getUserByUsername(String username);
