@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@PropertySource("classpath:application.yml")
+//@PropertySource("classpath:application.yml")
 public class KafkaProducerConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
