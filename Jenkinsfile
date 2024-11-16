@@ -21,7 +21,7 @@ pipeline {
                     docker run -d \
                     -v /root/alphafrog/application.yml:/app/config/application.yml \
                     -p 8090:8090 \
-                    alphafrog-v3
+                    alphafrog-v3 \
                     --spring.config.location=file:/app/config/application.yml
                    '''
             }
