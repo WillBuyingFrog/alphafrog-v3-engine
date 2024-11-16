@@ -128,7 +128,8 @@ public class IndexQuoteFetchServiceImpl implements IndexQuoteFetchService {
         Map<String, Object> queryParams = new HashMap<>();
 
         params.put("api_name", "index_daily");
-        queryParams.put("trade_date", tradeDate);
+        queryParams.put("start_date", tradeDate);
+        queryParams.put("end_date", tradeDate);
         queryParams.put("offset", offset);
         queryParams.put("limit", limit);
         params.put("params", queryParams);

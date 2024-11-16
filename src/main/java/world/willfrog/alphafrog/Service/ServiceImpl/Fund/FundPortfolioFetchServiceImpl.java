@@ -107,7 +107,7 @@ public class FundPortfolioFetchServiceImpl implements FundPortfolioFetchService 
         JSONArray data = ret.getJSONObject("data").getJSONArray("items");
 
 
-        return storeFundPortfoliosByRawTuShareOutput(data); // Placeholder return value
+        return storeFundPortfoliosByRawTuShareOutput(data); 
     }
 }
 

@@ -28,6 +28,6 @@ public interface UserDao {
     @Select("SELECT * FROM alphafrog_user WHERE username = #{username}")
     User getUserByUsername(String username);
 
-    @Select("SELECT * FROM alphafrog_user WHERE email = #{email}")
+    @Select("SELECT * FROM alphafrog_user WHERE email like #{email}")
     User getUserByEmail(String email);
 }

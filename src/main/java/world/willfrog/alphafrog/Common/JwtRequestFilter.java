@@ -1,8 +1,7 @@
 package world.willfrog.alphafrog.Common;
 
-import io.jsonwebtoken.Jwt;
+
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -13,9 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import world.willfrog.alphafrog.Common.JwtUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -37,16 +34,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //        System.out.println("Request path: " + request.getServletPath());
         try {
 
-            // 用户注册登录
-            if (request.getServletPath().equals("/user/register") ||
-                    request.getServletPath().equals("/user/login")) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-
             final String authorizationHeader = request.getHeader("Authorization");
-
 //            System.out.println("Authorization header: " + authorizationHeader);
 
             String userId;
@@ -56,7 +44,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 token = authorizationHeader.substring(7);
 //                System.out.println("Token: " + token);
                 if(JwtUtils.checkSign(token)) {
+                    System.out.println("Valid token: " + token);
                     userId = stringRedisTemplate.opsForValue().get("token:" + token);
+                    // Check if token is expired
                     if(userId != null){
                         UsernamePasswordAuthenticationToken authentication =
                                 new UsernamePasswordAuthenticationToken(userId,null, new ArrayList<>());

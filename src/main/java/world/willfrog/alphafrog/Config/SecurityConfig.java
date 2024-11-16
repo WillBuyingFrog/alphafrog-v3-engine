@@ -15,7 +15,7 @@ import world.willfrog.alphafrog.Common.JwtRequestFilter;
 public class SecurityConfig {
 
 
-    JwtRequestFilter jwtRequestFilter;
+    private final JwtRequestFilter jwtRequestFilter;
 
     public SecurityConfig(JwtRequestFilter jwtRequestFilter) {
         this.jwtRequestFilter = jwtRequestFilter;
@@ -31,6 +31,7 @@ public class SecurityConfig {
                         .requestMatchers("/public/**").permitAll()
                         .requestMatchers("/user/login").permitAll()         // 用户登录
                         .requestMatchers("/user/register").permitAll()      // 用户注册
+                        .requestMatchers("/user/logout").permitAll()
                         .requestMatchers("/index/get/**").permitAll()          // 指数信息
                         .anyRequest().authenticated()
                 )

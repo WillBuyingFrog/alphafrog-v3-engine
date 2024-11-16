@@ -33,7 +33,6 @@ public class TaskController {
         JSONObject taskConfigJSON = new JSONObject(taskConfig);
 
         String topic = getTopicForTaskType(taskConfigJSON.getString("task_type"));
-        System.out.println("topic is " + topic);
         try {
             String message = taskConfigJSON.toString();
             kafkaTemplate.send(topic, message);
@@ -52,6 +51,8 @@ public class TaskController {
         switch (taskType) {
             case "fetch":
                 return "fetch_topic";
+            case "batch_fetch":
+                return "batch_fetch_topic";
             case "analyze":
                 return "analyze_topic";
             default:

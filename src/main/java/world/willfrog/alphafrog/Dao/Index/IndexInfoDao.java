@@ -26,6 +26,12 @@ public interface IndexInfoDao {
     @Select("SELECT * FROM alphafrog_index_info WHERE name like '%${name}%'")
     List<IndexInfo> getIndexInfoByName(String name);
 
+    @Select("SELECT count(*) FROM alphafrog_index_info")
+    int getIndexInfoCount();
+
+    @Select("SELECT (ts_code) from alphafrog_fund_info limit ${limit} offset ${offset}")
+    List<String> getAllIndexInfoTsCodes(int offset, int limit);
+
     List<IndexDaily> getIndexDailyByTsCodeAndDateRange(String tsCode, Long startDate, Long endDate);
 
     List<IndexWeight> getIndexWeightByTsCodeAndDateRange(String tsCode, Long startDate, Long endDate);

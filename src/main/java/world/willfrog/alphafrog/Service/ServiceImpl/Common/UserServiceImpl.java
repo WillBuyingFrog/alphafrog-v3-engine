@@ -99,12 +99,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public int logout(String token){
         try {
-            String userId = JwtUtils.extractUserId(token);
-            if (userId == null) {
-                return 1;
+            Map<String, Object> map = JwtUtils.extractUserId(token);
+
+            String userID = (String) map.get("userID");
+            int status = (int) map.get("status");
+            if (userID == null) {
+                return 0; // 直接返回登出成功
+            }
+
+            if (status != 0){
+                // 防止定时任务没有处理过期的token
+                String today = String.format("user_login_bitmap:%d", System.currentTimeMillis() / (24*60*60*1000));
+                log.info("Changing login bit for user ID :{} in key {}", userID, today);
+                stringRedisTemplate.opsForValue().setBit(today, Long.parseLong(userID), false);
+                return 0;
             }
             String today = String.format("user_login_bitmap:%d", System.currentTimeMillis() / (24*60*60*1000));
-            stringRedisTemplate.opsForValue().setBit(today, Long.parseLong(userId), false);
+            stringRedisTemplate.opsForValue().setBit(today, Long.parseLong(userID), false);
             // 删除token
             stringRedisTemplate.delete("token:" + token);
 

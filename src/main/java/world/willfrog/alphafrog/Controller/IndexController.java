@@ -1,6 +1,7 @@
 package world.willfrog.alphafrog.Controller;
 
 
+import com.alibaba.fastjson2.JSONArray;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -85,10 +86,12 @@ public class IndexController {
             endDateTimestamp = System.currentTimeMillis();
         }
         
-        List<IndexDaily> indexDailyList = indexInformationUserService.getIndexDailyByTsCodeAndDateRange(tsCode, startDateTimestamp, endDateTimestamp);
+        List<IndexDaily> indexDailyList = indexInformationUserService.getIndexDailyByTsCodeAndDateRange(tsCode,
+                startDateTimestamp, endDateTimestamp);
+
 
         JSONObject ret = new JSONObject();
-        ret.put(tsCode, indexDailyList);
+        ret.put("result", indexDailyList);
 
         return ResponseEntity.ok(ret.toJSONString());
     }

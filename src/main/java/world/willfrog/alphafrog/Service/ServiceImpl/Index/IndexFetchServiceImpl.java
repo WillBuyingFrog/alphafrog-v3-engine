@@ -229,5 +229,15 @@ public class IndexFetchServiceImpl implements IndexFetchService {
         return indexDailyList.size();
     }
 
+    @Override
+    public List<String> getAllIndexTsCodes(){
+        return indexInfoDao.getAllIndexInfoTsCodes(0, 10000);
+    }
+
+    @Override
+    public int getIndexCount(){
+        return indexInfoDao.getIndexInfoCount();
+    }
+
 
 }

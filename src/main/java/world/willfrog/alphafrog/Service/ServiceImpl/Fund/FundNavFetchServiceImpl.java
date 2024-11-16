@@ -128,13 +128,13 @@ public class FundNavFetchServiceImpl implements FundNavFetchService {
      * 根据给定场内/场外市场以及净值公布日期，爬取所有符合条件的基金净值
      *
      * @param navDate 净值公布日期
-     * @param Market  场内/场外市场
+     * @param market  场内/场外市场。场内为E，场外为O
      * @param offset  分页偏移量
      * @param limit   分页最多条数
      * @return 若成功，则返回插入的净值数据条数；若失败，则返回负数
      */
     @Override
-    public int directFetchFundNavByNavDateAndMarket(String navDate, String Market, int offset, int limit) {
+    public int directFetchFundNavByNavDateAndMarket(String navDate, String market, int offset, int limit) {
 
         Map<String, Object> params = new HashMap<>();
         Map<String, Object> queryParams = new HashMap<>();
@@ -142,23 +142,35 @@ public class FundNavFetchServiceImpl implements FundNavFetchService {
         // 构建请求参数组合
         params.put("api_name", "fund_nav");
         queryParams.put("nav_date", navDate);
-        queryParams.put("market", Market);
+        if (market != null) {
+            queryParams.put("market", market);
+        }
         queryParams.put("offset", offset);
         queryParams.put("limit", limit);
         params.put("params", queryParams);
         // 所有条目都要爬取
-        params.put("fields", "ts_code,ann_date,nav_date,unit_nav,accum_nav,net_asset,total_netasset,adj_nav");
+        params.put("fields", "ts_code,ann_date,nav_date,unit_nav,accum_nav,accum_div,net_asset,total_netasset,adj_nav");
 
-        JSONObject res = tuShareRequestUtils.createTusharePostRequest(params);
+        boolean hasMore = true;
+        int queriedRows = 0;
+        while(hasMore){
+            JSONObject res = tuShareRequestUtils.createTusharePostRequest(params);
 
-        if (res == null) {
-            return -2;
+            if (res == null) {
+                return -2;
+            }
+
+            JSONArray fields = res.getJSONObject("data").getJSONArray("fields");
+            JSONArray data = res.getJSONObject("data").getJSONArray("items");
+            hasMore = res.getJSONObject("data").getBoolean("has_more");
+            queriedRows += storeFundNavsByRawFullTuShareOutput(data);
+            if(hasMore) {
+                offset += limit;
+                queryParams.put("offset", offset);
+            }
         }
 
-        JSONArray fields = res.getJSONObject("data").getJSONArray("fields");
-        JSONArray data = res.getJSONObject("data").getJSONArray("items");
-
         // 插入所有爬取到的基金净值
-        return storeFundNavsByRawFullTuShareOutput(data);
+        return queriedRows;
     }
 }
