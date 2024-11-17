@@ -43,7 +43,7 @@ public class FetchTaskConsumer {
         this.fundInfoFetchService = fundInfoFetchService;
     }
 
-    @KafkaListener(topics = "fetch_topic", groupId = "alphafrog-v3")
+    @KafkaListener(topics = "fetch_topic", groupId = "alphafrog-v3-fetch")
     public void listenFetchTasks(String message) throws JsonProcessingException {
         System.out.println("Received fetch task: " + message);
         // 转成json

@@ -15,11 +15,12 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'docker stop alphafrog-v3 || true'
-                sh 'docker rm alphafrog-v3 || true'
+                sh 'docker stop alphafrog-v3-1 || true'
+                sh 'docker rm alphafrog-v3-1 || true'
                 sh '''
                     docker run -d \
                     -v /root/alphafrog/application.yml:/app/config/application.yml \
+                    --name alphafrog-v3-1 \
                     -p 8090:8090 \
                     alphafrog-v3 \
                     --spring.config.location=file:/app/config/application.yml

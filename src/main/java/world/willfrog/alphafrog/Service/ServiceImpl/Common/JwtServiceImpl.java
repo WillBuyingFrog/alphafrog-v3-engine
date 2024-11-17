@@ -23,7 +23,9 @@ public class JwtServiceImpl implements JwtService {
 
         Date expireDate = new Date(System.currentTimeMillis() + expireTime);
         String token = JwtUtils.sign(userId, expireDate);
-        stringRedisTemplate.opsForValue().set("token:" + token, userId, expireTime, TimeUnit.MILLISECONDS);
+        // token过期之后由定时任务清除，因此设置token在redis中的过期时间为用户端token过期时间的
+        // 2倍，这样保证过期之后定时任务能扫描到，并且可以由定时任务设置bitmap
+        stringRedisTemplate.opsForValue().set("token:" + token, userId, expireTime * 2, TimeUnit.MILLISECONDS);
         return token;
     }
 }

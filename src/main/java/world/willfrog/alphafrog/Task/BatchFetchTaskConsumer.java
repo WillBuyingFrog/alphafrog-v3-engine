@@ -23,7 +23,7 @@ public class BatchFetchTaskConsumer {
     }
 
 
-    @KafkaListener( topics = "batch_fetch_topic", groupId = "alphafrog-v3")
+    @KafkaListener( topics = "batch_fetch_topic", groupId = "alphafrog-v3-batch-fetch")
     public void listenBatchFetchTask(String message) {
         JSONObject rawMessageJSON;
         try {
