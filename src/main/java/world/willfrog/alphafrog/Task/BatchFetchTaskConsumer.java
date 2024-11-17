@@ -33,6 +33,7 @@ public class BatchFetchTaskConsumer {
             return;
         }
 
+
         String taskName;
         JSONObject taskParams;
 

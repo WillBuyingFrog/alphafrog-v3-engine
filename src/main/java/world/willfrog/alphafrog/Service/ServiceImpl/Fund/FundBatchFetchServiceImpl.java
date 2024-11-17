@@ -28,6 +28,11 @@ public class FundBatchFetchServiceImpl implements FundBatchFetchService {
         String tradeDateStr;
         try{
             tradeDateStr = dateConvertUtils.convertTimestampToString(tradeDateTimestamp, "yyyyMMdd");
+//            String testDateStr1 = "20230106";
+//            String testDateStr2 = "20230107";
+//
+//            log.info("Date {} converted to {}", testDateStr1, dateConvertUtils.convertDateStrToLong(testDateStr1, "yyyyMMdd"));
+//            log.info("Date {} converted to {}", testDateStr2, dateConvertUtils.convertDateStrToLong(testDateStr2, "yyyyMMdd"));
         } catch (Exception e) {
             log.error("Failed to convert timestamp to string", e);
             return -1;

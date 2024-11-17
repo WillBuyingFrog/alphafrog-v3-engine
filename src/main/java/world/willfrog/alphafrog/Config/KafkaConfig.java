@@ -2,7 +2,7 @@ package world.willfrog.alphafrog.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.ProducerFactory;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Configuration
 //@PropertySource("classpath:application.yml")
-public class KafkaProducerConfig {
+public class KafkaConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
@@ -34,4 +34,5 @@ public class KafkaProducerConfig {
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         return new DefaultKafkaProducerFactory<>(props);
     }
+
 }
