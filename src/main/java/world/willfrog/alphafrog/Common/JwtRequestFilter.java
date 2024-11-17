@@ -44,7 +44,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 token = authorizationHeader.substring(7);
 //                System.out.println("Token: " + token);
                 if(JwtUtils.checkSign(token)) {
-                    System.out.println("Valid token: " + token);
+//                    System.out.println("Valid token: " + token);
                     userId = stringRedisTemplate.opsForValue().get("token:" + token);
                     // Check if token is expired
                     if(userId != null){
