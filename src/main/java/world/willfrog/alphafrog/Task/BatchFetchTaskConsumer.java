@@ -4,6 +4,7 @@ package world.willfrog.alphafrog.Task;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 import world.willfrog.alphafrog.Common.DateConvertUtils;
 import world.willfrog.alphafrog.Service.Fund.FundBatchFetchService;
@@ -24,7 +25,7 @@ public class BatchFetchTaskConsumer {
 
 
     @KafkaListener( topics = "batch_fetch_topic", groupId = "alphafrog-v3-batch-fetch")
-    public void listenBatchFetchTask(String message) {
+    public void listenBatchFetchTask(String message, Acknowledgment acknowledgment) {
         JSONObject rawMessageJSON;
         try {
             rawMessageJSON = JSONObject.parseObject(message);
@@ -73,6 +74,7 @@ public class BatchFetchTaskConsumer {
         }
 
         log.info("Task result: {}", result);
+        acknowledgment.acknowledge();
     }
 
 }
