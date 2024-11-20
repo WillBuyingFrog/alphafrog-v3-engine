@@ -57,7 +57,8 @@ public class BatchFetchTaskConsumer {
                         result = indexBatchFetchService.batchFetchIndexDailyByDateRange(
                                 taskParams.getLong("start_date_timestamp"),
                                 taskParams.getLong("end_date_timestamp"),
-                                taskParams.getInteger("request_interval"));
+                                taskParams.getInteger("request_interval"),
+                                taskParams.getInteger("offset"), taskParams.getInteger("limit"));
                     } else {
                         throw new NumberFormatException("Task subtype should only be 1, 2, 3");
                     }

@@ -30,7 +30,8 @@ public class IndexBatchFetchServiceImpl implements IndexBatchFetchService {
     }
 
     @Override
-    public int batchFetchIndexDailyByDateRange(long startDateTimestamp, long endDateTimestamp, int queryInterval) {
+    public int batchFetchIndexDailyByDateRange(long startDateTimestamp, long endDateTimestamp, int queryInterval,
+                                               int offset, int limit) {
 
         long DAY_TO_MILLISECOND = 24L * 60 * 60 * 1000;
         int res = 0;
@@ -43,7 +44,7 @@ public class IndexBatchFetchServiceImpl implements IndexBatchFetchService {
 
             log.info("Fetching all index daily quote from date {} to {}", startDate, endDate);
 
-            for(int i = 0; i < allIndexTsCodes.size(); i++){
+            for(int i = offset; i < Math.min(limit, allIndexTsCodes.size()); i++){
                 String tsCode = allIndexTsCodes.get(i);
                 log.info("Fetching index daily quote for tsCode: {}", tsCode);
 
