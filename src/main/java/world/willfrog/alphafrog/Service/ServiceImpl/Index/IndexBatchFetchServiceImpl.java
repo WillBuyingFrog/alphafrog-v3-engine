@@ -30,10 +30,10 @@ public class IndexBatchFetchServiceImpl implements IndexBatchFetchService {
     }
 
     @Override
-    public int batchFetchIndexDailyByDateRange(long startDateTimestamp, long endDateTimestamp) {
+    public int batchFetchIndexDailyByDateRange(long startDateTimestamp, long endDateTimestamp, int queryInterval) {
 
         long DAY_TO_MILLISECOND = 24L * 60 * 60 * 1000;
-        int res;
+        int res = 0;
 
         try{
             String startDate = dateConvertUtils.convertTimestampToString(startDateTimestamp, "yyyyMMdd");
@@ -43,15 +43,28 @@ public class IndexBatchFetchServiceImpl implements IndexBatchFetchService {
 
             log.info("Fetching all index daily quote from date {} to {}", startDate, endDate);
 
-//            for(int i = 0; i < indexCount; i++){
-//
-//            }
+            for(int i = 0; i < allIndexTsCodes.size(); i++){
+                String tsCode = allIndexTsCodes.get(i);
+                log.info("Fetching index daily quote for tsCode: {}", tsCode);
+
+                res += indexQuoteFetchService.directFetchIndexDailyByTsCodeAndDateRange(tsCode, startDate, endDate, 0, 10000);
+                if(res < 0){
+                    log.error("Failed to fetch index daily quote for tsCode: {}", tsCode);
+                    return -1;
+                }
+                try {
+                    Thread.sleep(queryInterval);
+                } catch (InterruptedException e) {
+                    log.error("Sleep interrupted while batch fetching index daily data", e);
+                    Thread.currentThread().interrupt();
+                }
+            }
 
         } catch (Exception e) {
             log.error("Error batch fetching index daily data");
             return -1;
         }
 
-        return 0;
+        return res;
     }
 }

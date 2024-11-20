@@ -2,6 +2,7 @@ package world.willfrog.alphafrog.Task;
 
 
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -9,10 +10,11 @@ import world.willfrog.alphafrog.Service.Fund.FundInfoFetchService;
 import world.willfrog.alphafrog.Service.Fund.FundNavFetchService;
 import world.willfrog.alphafrog.Service.Index.IndexFetchService;
 import world.willfrog.alphafrog.Service.Fund.FundPortfolioFetchService;
-
-import com.alibaba.fastjson.JSONObject;
+import world.willfrog.alphafrog.Service.Stock.StockInformationFetchService;
 import world.willfrog.alphafrog.Service.Index.IndexQuoteFetchService;
 import world.willfrog.alphafrog.Service.Index.IndexWeightFetchService;
+
+import com.alibaba.fastjson.JSONObject;
 
 
 @Service
@@ -26,13 +28,16 @@ public class FetchTaskConsumer {
     final FundPortfolioFetchService fundPortfolioFetchService;
     final FundInfoFetchService fundInfoFetchService;
 
+    final StockInformationFetchService stockInformationFetchService;
+
 
     public FetchTaskConsumer(IndexFetchService indexFetchService,
                              IndexQuoteFetchService indexQuoteFetchService,
                              IndexWeightFetchService indexWeightFetchService,
                              FundNavFetchService fundNavFetchService,
                              FundPortfolioFetchService fundPortfolioFetchService,
-                             FundInfoFetchService fundInfoFetchService) {
+                             FundInfoFetchService fundInfoFetchService,
+                             StockInformationFetchService stockInformationFetchService) {
         this.indexFetchService = indexFetchService;
         this.indexQuoteFetchService = indexQuoteFetchService;
         this.indexWeightFetchService = indexWeightFetchService;
@@ -41,10 +46,11 @@ public class FetchTaskConsumer {
         this.fundNavFetchService = fundNavFetchService;
         this.fundPortfolioFetchService = fundPortfolioFetchService;
         this.fundInfoFetchService = fundInfoFetchService;
+        this.stockInformationFetchService = stockInformationFetchService;
     }
 
     @KafkaListener(topics = "fetch_topic", groupId = "alphafrog-v3-fetch")
-    public void listenFetchTasks(String message) throws JsonProcessingException {
+    public void listenFetchTasks(String message, Acknowledgment acknowledgment) {
         System.out.println("Received fetch task: " + message);
         // 转成json
         JSONObject rawMessageJson = JSONObject.parseObject(message);
@@ -130,12 +136,23 @@ public class FetchTaskConsumer {
                         result = -1;
                     }
                     break;
+
+                case "stock_information":
+                    if (taskSubtype == 1) {
+                        result = stockInformationFetchService.directFetchStockInfoByMarket(taskParams.getString("exchange"));
+                    } else {
+                        // 不存在这样的子任务类型
+                        result = -1;
+                    }
+                    break;
                 default:
                     result = -1;
                     break;
+
             }
 
             System.out.println("Task result: " + result);
+            acknowledgment.acknowledge();
         } catch (Exception e){
             System.out.println("Error occurred while processing fetch task");
             e.printStackTrace();

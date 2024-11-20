@@ -2,6 +2,7 @@ package world.willfrog.alphafrog.Service.ServiceImpl.Index;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class IndexQuoteFetchServiceImpl implements IndexQuoteFetchService {
 
     TuShareRequestUtils tuShareRequestUtils;
@@ -69,10 +71,14 @@ public class IndexQuoteFetchServiceImpl implements IndexQuoteFetchService {
 
     int storeIndexDailies(List<IndexDaily> indexDailyList) {
         try ( SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)){
+            IndexDailyDao indexDailyDao = sqlSession.getMapper(IndexDailyDao.class);
+//            log.info("Start insert");
             for (IndexDaily indexDaily : indexDailyList) {
                 indexDailyDao.insertIndexDaily(indexDaily);
             }
+//            log.info("End insert, start commit");
             sqlSession.commit();
+//            log.info("End commit");
         } catch (Exception e) {
             System.out.println("Error occurred while storing index daily data" );
             e.printStackTrace();
@@ -105,6 +111,8 @@ public class IndexQuoteFetchServiceImpl implements IndexQuoteFetchService {
 
         try {
             List<Quote> quoteList = convertRawFullTuShareDataToQuoteList(data);
+
+            log.info("Fetched {} index daily data", quoteList.size());
 
             List<IndexDaily> indexDailyList = new ArrayList<>();
             for(Quote quote : quoteList){
